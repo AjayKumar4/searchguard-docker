@@ -10,5 +10,7 @@ ADD ${SG_FILE_PATH} /tmp/searchguard.zip
 RUN elasticsearch-plugin install --batch file:///tmp/searchguard.zip
 RUN rm -rf /tmp/searchguard.zip
 
+USER elasticsearch
+
 ENV ES_CLUSTER_NAME=searchguard-distribution
 CMD ["/bin/bash", "-c", "bin/elasticsearch -Enetwork.host=0.0.0.0 -Ecluster.name=$ES_CLUSTER_NAME -p es.pid"]
