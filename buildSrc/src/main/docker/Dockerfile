@@ -1,8 +1,11 @@
 ARG ES_VERSION
-ARG ES_BASE_IMAGE
 
 # https://www.docker.elastic.co/
-FROM docker.elastic.co/elasticsearch/elasticsearch-oss:${ES_VERSION}
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION}
+
+# federate tools require a valid Java home
+ENV JAVA_HOME /usr/share/elasticsearch/jdk
+ENV ES_JAVA_HOME /usr/share/elasticsearch/jdk
 
 # Search Guard plugin
 ARG SG_FILE_PATH
@@ -10,7 +13,5 @@ ADD ${SG_FILE_PATH} /tmp/searchguard.zip
 RUN elasticsearch-plugin install --batch file:///tmp/searchguard.zip
 RUN rm -rf /tmp/searchguard.zip
 
-USER elasticsearch
-
-ENV ES_CLUSTER_NAME=searchguard-distribution
-CMD ["/bin/bash", "-c", "bin/elasticsearch -Enetwork.host=0.0.0.0 -Ecluster.name=$ES_CLUSTER_NAME -p es.pid"]
+RUN mkdir -p /usr/share/elasticsearch/config/sgconfig /usr/share/elasticsearch/config/searchguard
+RUN chmod +x /usr/share/elasticsearch/plugins/search-guard**/tools/sgadmin.sh

@@ -9,11 +9,8 @@ def esVersion = "${project.properties.esVersion}"
 def sgVersion = Searchguard.getSearchGuardVersion(esVersion)
 def sgFilePath = Searchguard.getSearchGuardUrlPath(esVersion)
 
-if(sgVersion.toString().equals("null") || sgVersion.isEmpty()){
-  throw new Exception("Search Guard version not found for the elasticsearch '${esVersion}'");
-}
 
-String dockerImageName = "ajkumar4/searchguard-docker:${esVersion}-oss-${sgVersion}"
+String dockerImageName = "ajkumar4/searchguard-docker:${esVersion}-${sgVersion}"
 Map<String, String> buildArguments = [
         ES_VERSION  : "${esVersion}".toString(),
         SG_FILE_PATH: sgFilePath.toString()
